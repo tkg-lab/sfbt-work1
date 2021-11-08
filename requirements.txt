@@ -1,0 +1,11 @@
+streamlit==0.84.0
+transformers==4.5.0
+pytorch
+fugashi
+ipadic
+fastapi
+sqlalchemy
+typing
+requests
+pydantic
+pandas
