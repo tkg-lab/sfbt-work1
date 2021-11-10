@@ -1,7 +1,17 @@
 import streamlit as st
-import requests
-import json
 import pandas as pd
+
+from sqlalchemy.orm import Session, sessionmaker
+from transformers.utils.dummy_tf_objects import shape_list
+
+import sql_setting.models as models
+import sql_setting.crud as crud
+from sql_setting.database import SessionLocal, engine
+import sql_setting.goal_cls_fin as goal_cls_fin
+
+models.Base.metadata.create_all(bind=engine)
+SessionClass = sessionmaker(engine)  # セッションを作るクラスを作成
+session = SessionClass()
 
 page = 'works'
 
@@ -39,33 +49,26 @@ if page == 'works':
 
         if st.session_state.push1:
             # st.json(data)
-            url = 'http://127.0.0.1:8000/works'
-            res = requests.post(
-                url,
-                data = json.dumps(data)
-            )
-            if res.status_code == 200:
-                st.success('目標が送信されました。判定が終わると以下に表示されます。')
-            works = res.json()
-            # st.json(works)
-            df_works = pd.DataFrame(works,index=['i',])
-            df_works.columns = ['problem', 'scaling', 'life', 'mq', 'goal_q', 'work_id']
+            works = crud.create_work(db=session, work=data)
+            st.warning('目標の解析中です。判定結果が出るまで少しお待ちください ( . . . )')
+
+            # st.write(works)
+            df_works = pd.DataFrame(data,index=['your answer',])
+            df_works.columns = ['problem', 'scaling', 'life', 'mq', 'goal_q']
             # st.table(df_works)
 
+            # 予測の処理
+            text = works.goal_q
+            predict = goal_cls_fin.predict(text)
+            # st.write(predict)
+            crud.create_predict(db=session, predict=predict)
+
             # 予測値の表示
-            # st.write('判定結果が出ました。')
-            url_predict = 'http://127.0.0.1:8000/predict'
-            res = requests.post(
-                url_predict,
-                data = json.dumps(data)
-            )
-            if res.status_code == 200:
-                st.success('判定結果が出ました。')
-            predicts = res.json()
-            # st.json(predicts)
-            df_predicts = pd.DataFrame(predicts,index=['i',])
-            df_predicts.columns = ['goal_q', 'con_01', 'con_p', 'rea_01', 'rea_p', 'predict_id']
+            # st.write(predict)
+            df_predicts = pd.DataFrame(predict,index=['予測結果',])
+            df_predicts.columns = ['goal_q', 'con_01', 'con_p', 'rea_01', 'rea_p']
             # st.table(df_predicts)
+            st.success('解析が終わりました。判定結果をご確認ください。')
             con_p = df_predicts.iat[0, 2]
             con_p = '{:.02f}'.format(con_p*100)
             rea_p = df_predicts.iat[0, 4]
@@ -73,7 +76,7 @@ if page == 'works':
             st.subheader(f'あなたが設定した目標は「{df_predicts.iat[0,0]}」です')
             st.subheader(f'この目標が、具体的である確率は{con_p}%です。')
             st.subheader(f'この目標が、現実的である確率は{rea_p}%です。')
-            
+
             st.write('----')
             st.header('目標の再設定')
             st.write('具体性が高まるように目標を修正してみましょう。コツは、時間帯、場所、具体的な行動を設定することです。もしも、気持ちに関する目標を設定した場合は、そのような気持ちになったら何をするようになるかをお答えください。「～までに」という期日を設定することも効果的です。  \nもし「～しない」という目標を設定した場合は、その代わりに何をするのかをお答えください。')
@@ -83,29 +86,29 @@ if page == 'works':
             }
 
             resubmit_button = st.form_submit_button(label='再設定した目標の具体性と現実性を判定する')
-            st.write('* 何回でも判定することができます。納得が行くまで目標を修正してみてください。')
+            st.write('* 何回でも判定することができます。納得がいくまで目標を修正してみてください。')
 
             if resubmit_button:
                 # st.json(data)
-                url = 'http://127.0.0.1:8000/goal_reset'
-                res = requests.post(
-                    url,
-                    data = json.dumps(data2)
-                )
-                if res.status_code == 200:
-                    st.success('目標が送信されました。判定が終わると以下に表示されます。')
-                goal_reset = res.json()
-                # st.json(works)
-                df_goal_reset = pd.DataFrame(goal_reset,index=['i',])
-                df_goal_reset.columns = ['goal_reset', 'con_01', 'con_p', 'rea_01', 'rea_p', 'predict_id']
-                # st.table(df_works)
-                con_p_r = df_goal_reset.iat[0, 2]
-                con_p_r = '{:.02f}'.format(con_p_r*100)
-                rea_p_r = df_goal_reset.iat[0, 4]
-                rea_p_r = '{:.02f}'.format(rea_p_r*100)
-                st.subheader(f'あなたが設定した目標は「{df_goal_reset.iat[0,0]}」です')
-                st.subheader(f'この目標が、具体的である確率は{con_p_r}%です。')
-                st.subheader(f'この目標が、現実的である確率は{rea_p_r}%です。')
+                st.warning('目標の解析中です。判定結果が出るまで少しお待ちください ( . . . )')
+                text = goal_reset
+                predict2 = goal_cls_fin.predict_2(text)
+                # st.write(predict)
+                crud.create_goal(db=session, goal=predict2)
+
+                # 予測値の表示
+                # st.write(predict)
+                df_predicts2 = pd.DataFrame(predict2,index=['予測結果',])
+                df_predicts2.columns = ['goal_reset', 'con_01', 'con_p', 'rea_01', 'rea_p']
+                # st.table(df_predicts)
+                st.success('解析が終わりました。判定結果をご確認ください。')
+                con_p = df_predicts2.iat[0, 2]
+                con_p = '{:.02f}'.format(con_p*100)
+                rea_p = df_predicts2.iat[0, 4]
+                rea_p = '{:.02f}'.format(rea_p*100)
+                st.subheader(f'あなたが設定した目標は「{df_predicts2.iat[0,0]}」です')
+                st.subheader(f'この目標が、具体的である確率は{con_p}%です。')
+                st.subheader(f'この目標が、現実的である確率は{rea_p}%です。')
 
 
 
@@ -113,26 +116,24 @@ if page == 'works':
 # elif page == 'answers':
 #     st.write('answers')
 #     # 回答内容の一覧の取得
-#     url_works = 'http://127.0.0.1:8000/works'
-#     res = requests.get(url_works)
-#     works = res.json()
+#     works = crud.get_works(db=session)
 #     works_list = {}
 #     for work in works:
-#         works_list[work['work_id']] = {
-#             'problem': work['problem'],
-#             'goal_q': work['goal_q'],
-#             'mq': work['mq'],
-#             'work_id': work['work_id']
+#         works_list[work.work_id] = {
+#             'problem': work.problem,
+#             'goal_q': work.goal_q,
+#             'mq': work.mq,
+#             'work_id': work.work_id
 #         }
-#     st.write('### 回答内容の一覧')
+#     st.write(work)
 #     df_works_list = pd.DataFrame(works_list)
 #     st.table(df_works_list.T)
 
 
 #     # 予測の一覧の取得
-#     url_predict = 'http://127.0.0.1:8000/predict'
-#     res = requests.get(url_predict)
-#     predicts = res.json()
+#     read_predict(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+#     predicts = crud.get_predicts(db, skip=skip, limit=limit)
+#     return predicts
 #     predicts_list = {}
 #     for predict in predicts:
 #         predicts_list[predict['predict_id']] = {
