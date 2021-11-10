@@ -9,11 +9,11 @@ def get_works(db: Session, skip: int = 0, limit: int = 100):
 # 回答の登録
 def create_work(db: Session, work: schemas.Work):
     db_work = models.Work(
-        problem = work.problem,
-        scaling = work.scaling,
-        life = work.life,
-        mq = work.mq,
-        goal_q = work.goal_q
+        problem = work['problem'],
+        scaling = work['scaling'],
+        life = work['life'],
+        mq = work['mq'],
+        goal_q = work['goal_q']
         )
     db.add(db_work)
     db.commit()
