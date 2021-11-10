@@ -1,7 +1,9 @@
 
 import torch
 from transformers import BertJapaneseTokenizer, BertForSequenceClassification
+import streamlit as st
 
+@st.cache(show_spinner=False)
 def predict(text):
   MODEL_NAME = 'cl-tohoku/bert-base-japanese-whole-word-masking'
 
@@ -42,6 +44,7 @@ def predict(text):
   return resp
 
 
+@st.cache(show_spinner=False)
 def predict_2(text):
   MODEL_NAME = 'cl-tohoku/bert-base-japanese-whole-word-masking'
 
