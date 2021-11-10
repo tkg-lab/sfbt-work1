@@ -12,6 +12,8 @@ class Work(Base):
     life = Column(String, index=True)
     mq = Column(String, index=True)
     goal_q = Column(String, index=True)
+    def __repr__(self):
+        return "<Work(work_id = %s, problem = '%s', scaling = '%s', life = '%s', mq = '%s', goal_q = '%s')>" % (self.work_id, self.problem, self.scaling, self.life, self.mq, self.goal_q)
 
 class Predict(Base):
     __tablename__ = 'predicts'
@@ -21,6 +23,9 @@ class Predict(Base):
     con_p = Column(Float, index=True)
     rea_01 = Column(Integer, index=True)
     rea_p = Column(Float, index=True)
+    def __repr__(self):
+        return "<Predict(predict_id = %s, goal_q = '%s', con_01 = '%s', con_p = '%s', rea_01 = '%s', rea_p = '%s')>" % (self.predict_id, self.goal_q, self.con_01, self.con_p, self.rea_01, self.rea_p)
+
 
 class Goal(Base):
     __tablename__ = 'goals'
@@ -30,3 +35,5 @@ class Goal(Base):
     con_p = Column(Float, index=True)
     rea_01 = Column(Integer, index=True)
     rea_p = Column(Float, index=True)
+    def __repr__(self):
+        return "<Predict(predict_id = %s, goal_reset = '%s', con_01 = '%s', con_p = '%s', rea_01 = '%s', rea_p = '%s')>" % (self.predict_id, self.goal_reset, self.con_01, self.con_p, self.rea_01, self.rea_p)
