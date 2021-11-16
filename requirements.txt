@@ -1,5 +1,6 @@
 streamlit==0.84.0
 transformers==4.5.0
+--find-links https://download.pytorch.org/whl/torch_stable.html
 torch===1.10.0+cpu
 torchvision===0.11.1+cpu
 fugashi
