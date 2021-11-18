@@ -6,9 +6,10 @@ torchvision===0.11.1+cpu
 tensorflow-cpu
 fugashi
 ipadic
-gunicorn
+fastapi
 sqlalchemy
 typing
 requests
 pydantic
 pandas
+gunicorn
