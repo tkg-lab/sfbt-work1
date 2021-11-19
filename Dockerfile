@@ -3,6 +3,5 @@ COPY . /app
 WORKDIR /app
 RUN pip install -r requirements.txt
 EXPOSE 8501
-RUN sh setup.sh && \
- mkdir temp
-CMD streamlit run app.py --server.port $PORT
+ENTRYPOINT ["streamlit","run"]
+CMD ["app.py"]
