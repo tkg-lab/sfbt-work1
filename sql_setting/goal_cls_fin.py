@@ -8,7 +8,7 @@ import os
 def predict(text):
   MODEL_NAME = 'cl-tohoku/bert-base-japanese-whole-word-masking'
 
-  tokenizer = BertJapaneseTokenizer.from_pretrained(MODEL_NAME, force_download=True)
+  tokenizer = BertJapaneseTokenizer.from_pretrained(MODEL_NAME)
 
   cls_text = []
   cls_text.append(text)
@@ -16,10 +16,10 @@ def predict(text):
   model_path = os.path.dirname(os.path.abspath(__file__))
   
   bert_sc_con = BertForSequenceClassification.from_pretrained(
-      f'{model_path}/model_12e0_34e1_con', force_download=True
+      f'{model_path}/model_12e0_34e1_con'
   )
   bert_sc_rea = BertForSequenceClassification.from_pretrained(
-      f'{model_path}/model_0e0_12e0_34e1_rea', force_download=True
+      f'{model_path}/model_0e0_12e0_34e1_rea'
   )
   
   encoding = tokenizer(
