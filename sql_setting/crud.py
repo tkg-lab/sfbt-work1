@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
-from . import models, schemas
+import sql_setting.models as models
+import sql_setting.schemas as schemas
 
 # 回答一覧を取得する
 def get_works(db: Session, skip: int = 0, limit: int = 100):
