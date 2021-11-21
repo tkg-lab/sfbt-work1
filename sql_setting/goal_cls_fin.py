@@ -16,10 +16,10 @@ def predict(text):
   model_path = os.path.dirname(os.path.abspath(__file__))
   
   bert_sc_con = BertForSequenceClassification.from_pretrained(
-      f'{model_path}\model_12e0_34e1_con'
+      f'{model_path}/model_12e0_34e1_con'
   )
   bert_sc_rea = BertForSequenceClassification.from_pretrained(
-      f'{model_path}\model_0e0_12e0_34e1_rea'
+      f'{model_path}/model_0e0_12e0_34e1_rea'
   )
   
   encoding = tokenizer(
@@ -60,10 +60,10 @@ def predict_2(text):
   model_path = os.path.dirname(os.path.abspath(__file__))
   
   bert_sc_con = BertForSequenceClassification.from_pretrained(
-      f'{model_path}\model_12e0_34e1_con'
+      f'{model_path}/model_12e0_34e1_con'
   )
   bert_sc_rea = BertForSequenceClassification.from_pretrained(
-      f'{model_path}\model_0e0_12e0_34e1_rea'
+      f'{model_path}/model_0e0_12e0_34e1_rea'
   )
   encoding = tokenizer(
       cls_text,
