@@ -13,10 +13,10 @@ def predict(text):
   cls_text.append(text)
 
   bert_sc_con = BertForSequenceClassification.from_pretrained(
-      './sql_setting/model_12e0_34e1_con', from_tf=True
+      './sql_setting/model_12e0_34e1_con'
   )
   bert_sc_rea = BertForSequenceClassification.from_pretrained(
-      './sql_setting/model_0e0_12e0_34e1_rea', from_tf=True
+      './sql_setting/model_0e0_12e0_34e1_rea'
   )
   encoding = tokenizer(
       cls_text,
@@ -48,16 +48,16 @@ def predict(text):
 def predict_2(text):
   MODEL_NAME = 'cl-tohoku/bert-base-japanese-whole-word-masking'
 
-  tokenizer = BertJapaneseTokenizer.from_pretrained(MODEL_NAME, force_download=True)
+  tokenizer = BertJapaneseTokenizer.from_pretrained(MODEL_NAME)
 
   cls_text = []
   cls_text.append(text)
 
   bert_sc_con = BertForSequenceClassification.from_pretrained(
-      './sql_setting/model_12e0_34e1_con', from_tf=True
+      './sql_setting/model_12e0_34e1_con'
   )
   bert_sc_rea = BertForSequenceClassification.from_pretrained(
-      './sql_setting/model_0e0_12e0_34e1_rea', from_tf=True
+      './sql_setting/model_0e0_12e0_34e1_rea'
   )
   encoding = tokenizer(
       cls_text,
