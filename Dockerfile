@@ -1,9 +1,11 @@
 FROM python:3.9
-COPY . /app
+COPY requirements.txt app/requirements.txt
 WORKDIR /app
 RUN pip install -r requirements.txt
+COPY . /app
 EXPOSE 8501
-CMD streamlit run app.py
+ENTRYPOINT ["streamlit","run"]
+CMD ["app.py"]
 
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
