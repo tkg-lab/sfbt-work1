@@ -3,7 +3,7 @@ COPY requirements.txt app/requirements.txt
 WORKDIR /app
 RUN pip install -r requirements.txt
 COPY . /app
-EXPOSE $PORT
+EXPOSE 8050
 ENTRYPOINT ["streamlit","run"]
 CMD ["app.py"]
 
