@@ -1,11 +1,11 @@
 FROM python:3.9
+RUN pip install --upgrade pip
 COPY requirements.txt app/requirements.txt
 WORKDIR /app
 RUN pip install -r requirements.txt
 COPY . /app
-EXPOSE 8501
-ENTRYPOINT ["streamlit","run"]
-CMD ["app.py"]
+ENV PORT=
+CMD streamlit run app.py --server.port=${PORT} --browser.serverAddress="0.0.0.0"
 
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
